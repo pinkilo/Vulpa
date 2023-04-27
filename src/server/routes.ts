@@ -35,3 +35,8 @@ export const api = Router()
   .get("/alerts/history", async (_, res) =>
     res.send(packetier(true, await getAlertHistory()))
   )
+  .get("/chat", ({ query }, res) => {
+    res.send(
+      packetier(true, yt.chat.getChat(parseInt(query["page"] as string) || 0))
+    )
+  })

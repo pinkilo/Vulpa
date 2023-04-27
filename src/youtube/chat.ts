@@ -1,4 +1,4 @@
-import { google } from "googleapis"
+import { google, youtube_v3 } from "googleapis"
 import { Subscription } from "../types/google"
 import { auth } from "./auth"
 import logger from "winston"
@@ -12,9 +12,10 @@ import { userCache } from "../Cache"
 import { User } from "../models"
 import { randFromRange } from "../util"
 import Env from "../env"
+import Schema$LiveChatMessage = youtube_v3.Schema$LiveChatMessage
 
 const ytApi = google.youtube("v3")
-const chatMessages = []
+const chatMessages: Schema$LiveChatMessage[] = []
 const basePollingRate = 14.4 * 1000
 let lastSub: Subscription
 let liveChatId: string
@@ -112,6 +113,9 @@ const getRecentSubscribers = async () => {
   setTimeout(() => getRecentSubscribers(), basePollingRate * 2)
 }
 
+const getChat = (index: number = 0): Schema$LiveChatMessage[] =>
+  chatMessages.slice(index)
+
 export {
   ytApi as api,
   findChat,
@@ -119,4 +123,5 @@ export {
   sendMessage,
   getRandomUser,
   fetchUsers,
+  getChat,
 }
