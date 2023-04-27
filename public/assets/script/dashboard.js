@@ -15,7 +15,7 @@ async function load() {
   page.main.hidden = false
   page.loadingPlaceholder.hidden = true
 }
-wwwwwwwww
+
 async function loadChat() {
   const chat = await getChat()
   if (chat.length > 0) {
