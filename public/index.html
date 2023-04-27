@@ -4,19 +4,31 @@
     <meta charset="UTF-8" />
     <title>Yuki Bot UI</title>
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/dashboard.css" />
   </head>
 
   <body>
-    <h1>
-      Yuki <br />
-      Bot
-    </h1>
-    <p>welcome to yuki bot</p>
-    <div class="features">
-      <a href="/auth">Login</a>
-      <a href="/fox">Fox</a>
-      <a href="/leaderboard">Leaderboard</a>
-      <a href="/alerts">Alerts</a>
-    </div>
+    <header>
+      <h1>Yuki Bot</h1>
+      <p id="loading">welcome to yuki bot</p>
+      <div class="features">
+        <a href="/auth">Login</a>
+        <a href="/fox">Fox</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/alerts">Alerts</a>
+      </div>
+    </header>
+    <main>
+      <section id="chat_history">
+        <h3>Chat History</h3>
+        <ul></ul>
+      </section>
+      <section id="alert_history">
+        <h3>Alert History</h3>
+        <ul></ul>
+      </section>
+    </main>
+
+    <script src="/assets/script/dashboard.js"></script>
   </body>
 </html>
