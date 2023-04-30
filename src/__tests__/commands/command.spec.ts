@@ -53,10 +53,10 @@ describe("Command", () => {
       await command.execute(msg, tokenize(msg.snippet.displayMessage))
       expect(addCooldownMock).toBeCalledTimes(1)
     })
-    //it("should check cooldown once", async () => {
-    //  await command.execute(msg, tokenize(msg.snippet.displayMessage))
-    //  expect(checkCooldownMock).toBeCalledTimes(1)
-    //})
+    it("should check cooldown once", async () => {
+      await command.execute(msg, tokenize(msg.snippet.displayMessage))
+      expect(checkCooldownMock).toBeCalledTimes(1)
+    })
     it("should be on cooldown", async () => {
       await command.execute(msg, tokenize(msg.snippet.displayMessage))
       expect(command.onCooldown(msg.authorDetails.channelId)).toBe(true)
