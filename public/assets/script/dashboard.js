@@ -39,40 +39,41 @@ async function loadAlertHistory() {
  * @returns {HTMLElement[]}
  */
 function mapAlertsToLI(alerts) {
-  return alerts.map(
-    ({ description, redeemer: { name, id }, sound, durationSec }) => {
-      const li = document.createElement("li")
-      const desc = document.createElement("span")
-      const redeemer = document.createElement("span")
-      const soundPath = document.createElement("span")
-      const dur = document.createElement("span")
-      const replay = document.createElement("button")
-      replay.innerText = "replay"
-      replay.onclick = () => {
-        // TODO Alert replay
-        console.log("TODO")
+  return alerts.map((alert) => {
+    const {
+      description,
+      redeemer: { name, id },
+      sound,
+      durationSec,
+    } = alert
+    const li = document.createElement("li")
+    const desc = document.createElement("span")
+    const redeemer = document.createElement("span")
+    const soundPath = document.createElement("span")
+    const dur = document.createElement("span")
+    const replay = document.createElement("button")
+    replay.innerText = "replay"
+    replay.onclick = () => replayAlert(alert)
+    desc.innerText = description
+    redeemer.innerText = name
+    redeemer.setAttribute("data-state", "name")
+    redeemer.onclick = () => {
+      switch (redeemer.getAttribute("data-state")) {
+        case "name":
+          redeemer.innerText = id
+          redeemer.setAttribute("data-state", "id")
+          break
+        case "id":
+          redeemer.innerText = name
+          redeemer.setAttribute("data-state", "name")
+          break
       }
-      desc.innerText = description
-      redeemer.innerText = name
-      redeemer.setAttribute("data-state", "name")
-      redeemer.onclick = () => {
-        switch (redeemer.getAttribute("data-state")) {
-          case "name":
-            redeemer.innerText = id
-            redeemer.setAttribute("data-state", "id")
-            break
-          case "id":
-            redeemer.innerText = name
-            redeemer.setAttribute("data-state", "name")
-            break
-        }
-      }
-      soundPath.innerText = sound
-      dur.innerText = `${durationSec.toLocaleString()} sec`
-      li.append(desc, redeemer, soundPath, dur)
-      return li
     }
-  )
+    soundPath.innerText = sound
+    dur.innerText = `${durationSec.toLocaleString()} sec`
+    li.append(desc, redeemer, soundPath, dur, replay)
+    return li
+  })
 }
 
 /**
@@ -115,4 +116,19 @@ async function getChat() {
   const { payload } = await resp.json()
   console.log("chat", payload)
   return payload
+}
+
+/**
+ * @param {ALert} alert
+ */
+async function replayAlert(alert) {
+  console.log("Replaying Alert", alert)
+  const resp = await fetch("/api/alerts/replay", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      payload: alert,
+    }),
+  })
+  console.log(resp.status)
 }
