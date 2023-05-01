@@ -39,7 +39,7 @@ main section ul {
 }
 
 #alert_history ul {
-    padding: 0;
+    padding: 0 0.3rem 0 0;
     margin: 0;
     list-style: none;
 }
@@ -52,7 +52,8 @@ main section ul {
     font-size: 1em;
     padding: 0 0 0 0;
     transition: transform 0.1s ease-in-out;
-    background-color: rgba(0, 128, 0, 0.9);
+    background-color: rgba(0, 128, 0, 0.0);
+    border: 2px solid rgba(0, 128, 0, 0.9);
     border-radius: 5px;
 }
 
@@ -87,6 +88,7 @@ main section ul {
     grid-column: 2 / 2;
     grid-row: 1 / 5;
     border: none;
+    border-radius: 0 3px 3px 0;
     color: whitesmoke;
     background-color: #282828;
 }
