@@ -48,13 +48,11 @@ function mapAlertsToLI(alerts) {
     } = alert
     const li = document.createElement("li")
     const desc = document.createElement("span")
-    const redeemer = document.createElement("span")
-    const soundPath = document.createElement("span")
-    const dur = document.createElement("span")
-    const replay = document.createElement("button")
-    replay.innerText = "replay"
-    replay.onclick = () => replayAlert(alert)
+    desc.className = "alert_description"
     desc.innerText = description
+
+    const redeemer = document.createElement("span")
+    redeemer.className = "alert_redeemer"
     redeemer.innerText = name
     redeemer.setAttribute("data-state", "name")
     redeemer.onclick = () => {
@@ -69,8 +67,20 @@ function mapAlertsToLI(alerts) {
           break
       }
     }
+
+    const soundPath = document.createElement("span")
+    soundPath.className = "alert_soundpath"
     soundPath.innerText = sound
+
+    const dur = document.createElement("span")
+    dur.className = "alert_duration"
     dur.innerText = `${durationSec.toLocaleString()} sec`
+
+    const replay = document.createElement("button")
+    replay.className = "alert_replay"
+    replay.innerText = "replay"
+    replay.onclick = () => replayAlert(alert)
+
     li.append(desc, redeemer, soundPath, dur, replay)
     return li
   })
