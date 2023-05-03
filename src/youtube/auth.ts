@@ -3,21 +3,21 @@ import ENV from "../env"
 import { file } from "../util"
 import { Credentials } from "google-auth-library"
 import logger from "winston"
-import { announce, AuthEvent, EventName } from "../event"
+import { announce, AuthEvent } from "../event"
 
 const tokenPath = "./.private/tokens.json"
 
 const auth = new google.auth.OAuth2(
   ENV.GOOGLE.G_CLIENT_ID,
   ENV.GOOGLE.G_CLIENT_SECRET,
-  ENV.GOOGLE.G_REDIRECT_URI
+  ENV.GOOGLE.G_REDIRECT_URI,
 )
 
 /** Sets auth credentials and writes tokens to file */
 const setCredentials = async (tokens: Credentials) => {
   auth.setCredentials(tokens)
   logger.info("tokens updated, running listeners")
-  announce<AuthEvent>({ name: EventName.AUTH, credentials: tokens })
+  announce(new AuthEvent(tokens))
   logger.info("writing tokens to file")
   await file.write("./.private/tokens.json", JSON.stringify(tokens))
 }
