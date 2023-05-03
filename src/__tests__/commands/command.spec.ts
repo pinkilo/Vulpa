@@ -1,5 +1,5 @@
 import Command from "../../yuki/commands/Command"
-import { chatMessage } from "../config"
+import { chatMessage } from "../util"
 import { tokenize } from "../../yuki/processing"
 import MoneySystem from "../../yuki/MoneySystem"
 

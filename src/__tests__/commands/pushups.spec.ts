@@ -1,5 +1,5 @@
 import { Pushups } from "../../yuki/commands/Redemptions"
-import { chatMessage } from "../config"
+import { chatMessage } from "../util"
 import { tokenize } from "../../yuki/processing"
 import youtube from "../../youtube"
 import * as Alerts from "../../yuki/Alerts"
