@@ -41,7 +41,6 @@ export class MessageBatchEvent implements Event {
     this.incoming = incoming
     this.all = all
   }
-
 }
 
 export class WebsocketConnectEvent implements Event {
@@ -50,12 +49,10 @@ export class WebsocketConnectEvent implements Event {
 
 export class BankLoadEvent implements Event {
   readonly name = EventName.BANK_LOAD
-
 }
 
 export class BankUpdateEvent implements Event {
   readonly name = EventName.BANK_UPDATE
-
 }
 
 export class AlertEvent implements Event {
@@ -64,9 +61,7 @@ export class AlertEvent implements Event {
 
   constructor(alert: Alert) {
     this.alert = alert
-
   }
-
 }
 
 const eventListeners: Map<EventName, Function[]> = new Map()
@@ -74,7 +69,7 @@ const eventListeners: Map<EventName, Function[]> = new Map()
 /** Adds an event listener for the given event type */
 export const listen = <E extends Event>(
   eventName: EventName,
-  listener: (event: E) => Promise<any>,
+  listener: (event: E) => Promise<any>
 ) => {
   if (!eventListeners[eventName]) eventListeners[eventName] = []
   eventListeners[eventName].push(listener)

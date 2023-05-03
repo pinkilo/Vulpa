@@ -13,7 +13,7 @@ export type Alert = {
 /////
 const randomSound = async () => {
   const sounds = await file.list(
-    join(__dirname, "public/assets/audio/backstroke"),
+    join(__dirname, "public/assets/audio/backstroke")
   )
   return (
     sounds?.length &&
@@ -23,7 +23,7 @@ const randomSound = async () => {
 
 /////
 listen<AlertEvent>(EventName.ALERT, async () =>
-  file.write(Env.FILE.ALERTS, JSON.stringify(await getAlertHistory())),
+  file.write(Env.FILE.ALERTS, JSON.stringify(await getAlertHistory()))
 )
 
 let alertHistory: Alert[] = null
