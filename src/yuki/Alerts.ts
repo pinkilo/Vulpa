@@ -15,9 +15,9 @@ const randomSound = async () => {
   const sounds = await file.list(
     join(__dirname, "public/assets/audio/backstroke")
   )
-  return join(
-    "assets/audio/backstroke",
-    sounds[randFromRange(0, sounds.length)]
+  return (
+    sounds?.length &&
+    join("assets/audio/backstroke", sounds[randFromRange(0, sounds.length)])
   )
 }
 
@@ -47,7 +47,7 @@ export const addAlert = async (alert: Alert) => {
   alert.sound = await randomSound()
   alertQueue.push(alert)
   ;(await getAlertHistory()).push(alert)
-  announce({ name: EventName.ALERT, alert })
+  announce(new AlertEvent(alert))
 }
 
 export const nextAlert = () => alertQueue.shift()

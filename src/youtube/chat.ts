@@ -1,22 +1,13 @@
-import { google } from "googleapis"
-import { Subscription } from "../types/google"
-import { auth } from "./auth"
 import logger from "winston"
-import {
-  announce,
-  EventName,
-  MessageBatchEvent,
-  SubscriberEvent,
-} from "../event"
+import auth from "./auth"
+import ytApi, { basePollingRate } from "./apiClient"
+import { announce, MessageBatchEvent } from "../event"
 import { userCache } from "../Cache"
 import { User } from "../models"
 import { randFromRange } from "../util"
 import Env from "../env"
 
-const ytApi = google.youtube("v3")
 const chatMessages = []
-const basePollingRate = 14.4 * 1000
-let lastSub: Subscription
 let liveChatId: string
 let nextPage: string
 
@@ -44,11 +35,7 @@ const getChatMessages = async () => {
       userCache.put(user.id, user)
       userCache.put(user.name, user)
     })
-  announce<MessageBatchEvent>({
-    name: EventName.MESSAGE_BATCH,
-    incoming: newMessages,
-    all: chatMessages,
-  })
+  announce(new MessageBatchEvent(newMessages, chatMessages))
   chatMessages.push(...newMessages)
   setTimeout(getChatMessages, basePollingRate)
 }
@@ -94,22 +81,6 @@ const fetchUsers = async (uid: string[]): Promise<User[]> => {
     auth,
   })
   return result.data.items?.map((c) => User.fromChannel(c)) || []
-}
-
-const getRecentSubscribers = async () => {
-  logger.info("checking subscribers")
-  const response = await ytApi.subscriptions.list({
-    auth,
-    part: ["subscriberSnippet"],
-    myRecentSubscribers: true,
-  })
-  if (lastSub.snippet.channelId != response.data.items[0].snippet.channelId) {
-    announce<SubscriberEvent>({
-      name: EventName.SUBSCRIBER,
-      subscription: response.data.items[0],
-    })
-  }
-  setTimeout(() => getRecentSubscribers(), basePollingRate * 2)
 }
 
 export {
