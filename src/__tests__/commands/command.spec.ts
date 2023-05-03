@@ -48,6 +48,7 @@ describe("Command", () => {
     beforeEach(() => {
       command = new Command("test", [], 0, 100, 0, async () => {})
       addCooldownMock = jest.spyOn(command, "addCooldown")
+      checkCooldownMock = jest.spyOn(command, "onCooldown")
     })
     it("should add cooldown once", async () => {
       await command.execute(msg, tokenize(msg.snippet.displayMessage))
