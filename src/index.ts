@@ -16,7 +16,17 @@ import {
 logger.configure({
   level: ENV.NODE_ENV === "test" ? "debug" : "info",
   transports: [new transports.Console()],
-  format: format.cli(),
+  format: format.combine(
+    format.errors({ stack: true }),
+    format.colorize({ all: true }),
+    format.timestamp(),
+    format.printf(
+      (info) =>
+        `[${info.timestamp}] YUKI ${info.level}: ${info.message} ${
+          info.err || ""
+        }`
+    )
+  ),
 })
 
 listen<AuthEvent>(EventName.AUTH, async () => logger.info("Tokens Updated"))
