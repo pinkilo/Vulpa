@@ -8,7 +8,7 @@ const isTest = process.env.NODE_ENV === "test"
 export default {
   NODE_ENV: process.env.NODE_ENV,
   TEST: isTest,
-  PORT: parseInt(process.env.PORT) + (isTest ? 1 : 0),
+  PORT: parseInt(process.env.PORT),
   FILE: {
     CACHE: {
       USER: "./.cache/user.json",
@@ -16,6 +16,7 @@ export default {
     },
     ALERTS: "./.cache/alert_history.json",
     SUBSCRIBER: "./.cache/lastsub.json",
+    TOKENS: "./.private/tokens.json",
   },
   SELF: {
     ID: "UCC5woRixgHKy-3iOOVSKwZA",

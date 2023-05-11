@@ -1,7 +1,7 @@
 import { AlertEvent, announce } from "../../event"
 import Alert from "./Alert"
 import { file, randFromRange } from "../../util"
-import { join } from "path"
+import { join, basename, resolve } from "path"
 import { recordAlert } from "./history"
 
 let _alertQueue: Alert[] = []
@@ -9,7 +9,9 @@ let _sounds: string[] = null
 
 const _randomSound = async () => {
   if (_sounds === null)
-    _sounds = await file.list(join(__dirname, "public/assets/audio/backstroke"))
+    _sounds = await file.list(
+      join(basename(resolve(process.cwd())), "public/assets/audio/backstroke")
+    )
   return join(
     "assets/audio/backstroke",
     _sounds[randFromRange(0, _sounds.length)]
