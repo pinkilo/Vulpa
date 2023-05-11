@@ -1,7 +1,10 @@
 {
-  "watch": ["build/", "yuki.js"],
+  "watch": [
+    "src/**",
+    "public"
+  ],
+  "ext": "ts,html,css,js",
   "env": {
     "NODE_ENV": "test"
-  },
-  "ext": "js"
+  }
 }
