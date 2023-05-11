@@ -87,4 +87,6 @@ async function main() {
   setSocket(new WebSocketServer({ server: svr, path: "/fox" }))
 }
 
+main()
+
 export default main
