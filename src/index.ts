@@ -1,17 +1,12 @@
-import yt from "./youtube"
-import server from "./server"
 import logger, { format, transports } from "winston"
-import { enqueueNewAlert, MoneySystem, processMessage, setSocket } from "./yuki"
+import { enqueueNewAlert, MoneySystem, setSocket } from "./yuki"
 import ENV from "./env"
-import { WebSocketServer } from "ws"
 import "./testing"
-import {
-  AuthEvent,
-  EventName,
-  listen,
-  MessageBatchEvent,
-  SubscriberEvent,
-} from "./event"
+import { yuki, YukiBuilder } from "@pinkilo/yukibot"
+import { BeatAss, ListCommands } from "./commands"
+import { WebSocketServer } from "ws"
+import { file } from "./util"
+import { Credentials } from "google-auth-library"
 
 logger.configure({
   level: ENV.NODE_ENV === "test" ? "debug" : "info",
@@ -29,64 +24,60 @@ logger.configure({
   ),
 })
 
-listen<AuthEvent>(EventName.AUTH, async () => logger.info("Tokens Updated"))
-
-// process incoming messages
-listen<MessageBatchEvent>(
-  EventName.MESSAGE_BATCH,
-  async ({ incoming, all }) => {
-    if (all.length === 0) return
-    if (incoming.length > 0) logger.debug("Processing Message Batch")
-    incoming.forEach(processMessage)
+const TokenHandlers = (y: YukiBuilder) => {
+  y.tokenLoader = async () => {
+    logger.info("checking for saved tokens")
+    if (file.exists(ENV.FILE.TOKENS)) {
+      logger.debug("attempting to parse saved tokens")
+      const raw = await file.read(ENV.FILE.TOKENS)
+      let tokens: Credentials = JSON.parse(raw.toString())
+      return tokens
+    }
+    logger.info("No saved tokens")
+    return undefined
   }
-)
-
-// save caches
-listen<MessageBatchEvent>(EventName.MESSAGE_BATCH, async ({ all }) => {
-  if (all.length === 0) return
-  await yt.users.userCache.save(ENV.FILE.CACHE.USER)
-})
-
-// alert new subscriptions
-listen<SubscriberEvent>(EventName.SUBSCRIBER, async ({ subscription }) => {
-  await enqueueNewAlert(
-    "New Subscriber!",
-    subscription.subscriberSnippet.title,
-    subscription.subscriberSnippet.channelId
-  )
-})
-
-async function startChatTracking() {
-  const success = await yt.chat.trackChat()
-  if (success) {
-    listen<AuthEvent>(EventName.AUTH, () => yt.chat.trackChat())
-    await enqueueNewAlert("Bot Connected", "Yuki", ENV.SELF.ID, 4)
-  } else setTimeout(startChatTracking, 1000 * 60)
+  y.onAuthUpdate(async (tokens) => {
+    await file.write(ENV.FILE.TOKENS, JSON.stringify(tokens))
+  })
 }
 
 async function main() {
   logger.info(`Running in ${ENV.NODE_ENV}`)
   // load caches
-  logger.info("loaded caches")
-  await yt.users.userCache.load(ENV.FILE.CACHE.USER)
+  // await yt.users.userCache.load(ENV.FILE.CACHE.USER)
   await MoneySystem.walletCache.load(ENV.FILE.CACHE.BANK)
-  await yt.auth.loadTokens()
 
-  // things not to do in test mode
-  if (!ENV.TEST) {
-    // track chat
-    await startChatTracking()
-    // start sub watcher
-    await yt.subscriptions.updateSubscriptionsLoop()
-  }
+  const bot = await yuki((y) => {
+    y.logLevel = "http"
+    y.yukiConfig.name = "Yuki"
+    y.yukiConfig.prefix = /^[>!].*$/
+    y.googleConfig = {
+      clientId: ENV.GOOGLE.G_CLIENT_ID,
+      clientSecret: ENV.GOOGLE.G_CLIENT_SECRET,
+      redirectUri: ENV.GOOGLE.G_REDIRECT_URI,
+    }
+    TokenHandlers(y)
 
-  const svr = server().listen(ENV.PORT, () =>
+    BeatAss(y)
+    ListCommands(y)
+
+    y.onSubscription(async (sub) => {
+      await enqueueNewAlert(
+        "New Subscriber!",
+        sub.subscriberSnippet.title,
+        sub.subscriberSnippet.channelId
+      )
+    })
+  })
+  bot.onAuthUpdate(() => bot.start())
+  await bot.start()
+
+  const svr = bot.express.listen(ENV.PORT, () =>
     logger.info(`http://localhost:${ENV.PORT}`)
   )
-
   setSocket(new WebSocketServer({ server: svr, path: "/fox" }))
 }
 
 main()
-
-export default main
+  .then()
+  .catch((e) => logger.error("crashed", { e }))

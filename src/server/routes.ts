@@ -22,17 +22,6 @@ export const pages = Router()
     res.sendFile(join(__dirname, "public/leaderboard.html"))
   )
 
-export const oath = Router()
-  .get("/auth", (_, res) => res.redirect(yt.auth.getAuthUrl()))
-  .get("/callback", async (req, res) => {
-    const { code } = req.query
-    logger.info("auth code received")
-    const tokens = await yt.auth.getTokens(code as string)
-    logger.info("tokens received")
-    await yt.auth.setCredentials(tokens)
-    res.redirect("/")
-  })
-
 const alertApi = Router()
   .get("/", (_, res) => res.send(packetier(true, nextAlert())))
   .get("/history", async (_, res) =>
