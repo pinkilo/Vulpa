@@ -3,10 +3,11 @@ import { enqueueNewAlert, MoneySystem, setSocket } from "./yuki"
 import ENV from "./env"
 import "./testing"
 import { yuki, YukiBuilder } from "@pinkilo/yukibot"
-import { BeatAss, ListCommands } from "./commands"
+import { Beans, BeatAss, ListCommands, Socials } from "./commands"
 import { WebSocketServer } from "ws"
 import { file } from "./util"
 import { Credentials } from "google-auth-library"
+import server from "./server"
 
 logger.configure({
   level: ENV.NODE_ENV === "test" ? "debug" : "info",
@@ -41,13 +42,16 @@ const TokenHandlers = (y: YukiBuilder) => {
   })
 }
 
+const Commands = async (y: YukiBuilder) =>
+  Promise.all([BeatAss(y), ListCommands(y), Beans(y), Socials(y)])
+
 async function main() {
   logger.info(`Running in ${ENV.NODE_ENV}`)
   // load caches
   // await yt.users.userCache.load(ENV.FILE.CACHE.USER)
   await MoneySystem.walletCache.load(ENV.FILE.CACHE.BANK)
 
-  const bot = await yuki((y) => {
+  const bot = await yuki(async (y) => {
     y.logLevel = "http"
     y.yukiConfig.name = "Yuki"
     y.yukiConfig.prefix = /^[>!].*$/
@@ -58,8 +62,7 @@ async function main() {
     }
     TokenHandlers(y)
 
-    BeatAss(y)
-    ListCommands(y)
+    await Commands(y)
 
     y.onSubscription(async (sub) => {
       await enqueueNewAlert(
@@ -72,7 +75,7 @@ async function main() {
   bot.onAuthUpdate(() => bot.start())
   await bot.start()
 
-  const svr = bot.express.listen(ENV.PORT, () =>
+  const svr = server(bot.express).listen(ENV.PORT, () =>
     logger.info(`http://localhost:${ENV.PORT}`)
   )
   setSocket(new WebSocketServer({ server: svr, path: "/fox" }))
