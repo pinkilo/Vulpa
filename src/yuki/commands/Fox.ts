@@ -1,39 +1,40 @@
-import Command from "./Command"
+import { YukiBuilder } from "@pinkilo/yukibot"
+import supercommand from "./supercommand"
 import { setAnimation } from "../fox"
 import { randFromRange } from "../../util"
+import MoneySystem from "../MoneySystem"
 
-const attack = new Command("attack", [], 5, 2 * 60, 20, async (msg) => {
-  setAnimation("attack", msg.authorDetails.displayName)
-})
+export const Attack = (y: YukiBuilder) =>
+  y.command((c) => {
+    c.name = "attack"
+    c.alias = ["fox.attack"]
+    supercommand(c, 10, async ({ authorDetails }) => {
+      setAnimation("attack", authorDetails.displayName)
+    })
+  })
 
-const feed = new Command(
-  "feed",
-  [],
-  5,
-  3 * 60,
-  30,
-  async ({ authorDetails: { channelId } }, _, cost) => {
-    setAnimation("eat")
-    return {
-      uids: [channelId],
-      amount: randFromRange(cost * 1.1, cost * 2),
-    }
-  }
-)
+export const Feed = (y: YukiBuilder) =>
+  y.command((c) => {
+    c.name = "feed"
+    c.alias = ["fox.feed"]
+    c.rateLimit.individual = 60 * 5
+    supercommand(c, 5, async ({ authorDetails: { channelId } }, _, cost) => {
+      setAnimation("eat")
+      await MoneySystem.transactionBatch([
+        [channelId, randFromRange(cost * 1.1, cost * 2)],
+      ])
+    })
+  })
 
-const dance = new Command(
-  "dance",
-  [],
-  5,
-  3 * 60,
-  20,
-  async ({ authorDetails: { channelId } }, _, cost) => {
-    setAnimation("dance")
-    return {
-      uids: [channelId],
-      amount: randFromRange(cost, cost * 1.5),
-    }
-  }
-)
-
-export default { attack, feed, dance }
+export const Dance = (y: YukiBuilder) =>
+  y.command((c) => {
+    c.name = "dance"
+    c.alias = ["fox.dance"]
+    c.rateLimit.individual = 60 * 5
+    supercommand(c, 5, async ({ authorDetails: { channelId } }, _, cost) => {
+      setAnimation("dance")
+      await MoneySystem.transactionBatch([
+        [channelId, randFromRange(cost, cost * 1.5)],
+      ])
+    })
+  })

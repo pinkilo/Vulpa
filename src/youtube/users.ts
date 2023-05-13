@@ -1,8 +1,6 @@
-import { User } from "../models"
+import { User } from "@pinkilo/yukibot"
 import { AsyncCache } from "../Cache"
 import { randFromRange } from "../util"
-import ytApi from "./apiClient"
-import auth from "./auth"
 
 const userCache = new AsyncCache<User>(async (k) => (await fetchUsers([k]))[0])
 
@@ -11,13 +9,13 @@ const getRandomUser = (exclude: string[] = []): User => {
   return users[randFromRange(0, users.length)]
 }
 
-const fetchUsers = async (uid: string[]): Promise<User[]> => {
-  const result = await ytApi.channels.list({
-    id: uid,
-    part: ["snippet"],
-    auth,
-  })
-  return result.data.items?.map((c) => User.fromChannel(c)) || []
+const fetchUsers = async (_: string[]): Promise<User[]> => {
+  // const result = await ytApi.channels.list({
+  //   id: uid,
+  //   part: ["snippet"],
+  //   auth,
+  // })
+  return undefined
 }
 
 export { userCache, getRandomUser, fetchUsers }

@@ -1,7 +1,7 @@
 import express, { Router } from "express"
 import { join } from "path"
 import yt from "../youtube"
-import logger from "winston"
+import logger from "../logger"
 import {
   Alert,
   getAlertHistory,
@@ -10,16 +10,17 @@ import {
   replayAlert,
 } from "../yuki"
 import { Packet, packetier } from "packetier"
-import { popLeaderboardDisplayTimer } from "../yuki/commands/Wallet"
+import { popLeaderboardDisplayTimer } from "../yuki/_commands/Wallet"
+import { file } from "../util"
 
 export const pages = Router()
-  .get("/", (_, res) => res.sendFile(join(__dirname, "public/index.html")))
-  .get("/fox", (_, res) => res.sendFile(join(__dirname, "public/fox.html")))
+  .get("/", (_, res) => res.sendFile(join(file.cwd, "public/index.html")))
+  .get("/fox", (_, res) => res.sendFile(join(file.cwd, "public/fox.html")))
   .get("/alerts", (_, res) =>
-    res.sendFile(join(__dirname, "public/alerts.html"))
+    res.sendFile(join(file.cwd, "public/alerts.html"))
   )
   .get("/leaderboard", (_, res) =>
-    res.sendFile(join(__dirname, "public/leaderboard.html"))
+    res.sendFile(join(file.cwd, "public/leaderboard.html"))
   )
 
 const alertApi = Router()
