@@ -1,48 +1,19 @@
-import Command from "./Command"
 import ListCommands from "./ListCommands"
 import BeatAss from "./BeatAss"
-import { TokenBin } from "../processing"
-import { ChatMessage } from "../../types/google"
-import logger from "winston"
+import Beans from "./Beans"
 import Socials from "./Socials"
-import { Wallet, Ranking, Leaderboard } from "./Wallet"
-import { Beans } from "./Memes"
-import Fox from "./Fox"
-import { FitCheck, Hydrate, Pushups } from "./Redemptions"
+import { FitCheck, Pushups, Hydrate } from "./Redemptions"
+import * as Fox from "./Fox"
+import * as Wallet from "./Wallet"
 
-const commandMap = new Map<string, Command>()
-const enabledCommands = Object.freeze([
+export {
   ListCommands,
   BeatAss,
-  Socials,
-  Wallet,
   Beans,
-  Ranking,
-  Fox.attack,
-  Fox.feed,
-  Fox.dance,
+  Socials,
   FitCheck,
   Pushups,
   Hydrate,
-  Leaderboard,
-])
-
-// Load commands into the map
-;(() =>
-  enabledCommands.forEach((cmd) =>
-    [cmd.name, ...cmd.alias].forEach((name) => commandMap.set(name, cmd))
-  ))()
-
-const getCmd = (name: string): Command | undefined => commandMap.get(name)
-
-const runCmd = async (name: string, msg: ChatMessage, tokens: TokenBin) => {
-  const cmd = getCmd(name)
-  if (cmd) {
-    logger.info(`EXECUTE: ${name}`)
-    await cmd?.execute(msg, tokens)
-  } else {
-    logger.debug(`no command found with name "${name}"`)
-  }
+  Fox,
+  Wallet,
 }
-
-export { Command, runCmd, getCmd, enabledCommands }

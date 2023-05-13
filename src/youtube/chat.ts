@@ -3,8 +3,6 @@ import { youtube_v3 } from "googleapis"
 import auth from "./auth"
 import ytApi, { basePollingRate } from "./apiClient"
 import { announce, MessageBatchEvent } from "../event"
-import { userCache } from "./users"
-import { User } from "../models"
 import Env from "../env"
 import Schema$LiveChatMessage = youtube_v3.Schema$LiveChatMessage
 import Schema$LiveBroadcast = youtube_v3.Schema$LiveBroadcast
@@ -33,12 +31,12 @@ const getChatMessages = async () => {
   })
   const newMessages = response.data.items
   nextPage = response.data.nextPageToken
-  newMessages
-    .map((m) => User.fromAuthor(m.authorDetails))
-    .forEach((user) => {
-      userCache.put(user.id, user)
-      userCache.put(user.name, user)
-    })
+  //newMessages
+  //  .map((m) => User.fromAuthor(m.authorDetails))
+  //  .forEach((user) => {
+  //    userCache.put(user.id, user)
+  //    userCache.put(user.name, user)
+  //  })
   announce(new MessageBatchEvent(newMessages, chatMessages))
   chatMessages.push(...newMessages)
   setTimeout(getChatMessages, basePollingRate)

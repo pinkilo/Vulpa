@@ -1,16 +1,25 @@
-import { processMessage } from "./processing"
 import MoneySystem from "./MoneySystem"
 import { setSocket } from "./fox"
 import {
-  enqueueNewAlert,
   Alert,
-  replayAlert,
+  enqueueNewAlert,
   getAlertHistory,
   nextAlert,
+  replayAlert,
 } from "./alerts"
+import {
+  Beans,
+  BeatAss,
+  FitCheck,
+  Fox,
+  Hydrate,
+  ListCommands,
+  Pushups,
+  Socials,
+  Wallet,
+} from "./commands"
 
 export {
-  processMessage,
   MoneySystem,
   setSocket,
   getAlertHistory,
@@ -18,4 +27,13 @@ export {
   replayAlert,
   enqueueNewAlert,
   nextAlert,
+  ListCommands,
+  BeatAss,
+  Beans,
+  Socials,
+  FitCheck,
+  Pushups,
+  Hydrate,
+  Fox,
+  Wallet,
 }

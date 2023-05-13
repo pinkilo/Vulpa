@@ -1,11 +1,12 @@
 import { YukiBuilder } from "@pinkilo/yukibot"
-import command from "../command"
+import command from "./supercommand"
 import { randFromRange } from "../../util"
 
 export default (y: YukiBuilder) =>
   y.command(async (c) => {
     c.name = "beans"
     c.alias = ["🫘", "beans"]
+    c.rateLimit.individual = 120
     command(c, 0, async (_, { command }) => {
       let msg: string
       switch (command as "bean" | "🫘" | "beans") {

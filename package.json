@@ -1,7 +1,7 @@
 {
   "name": "yuki-bot",
   "version": "1.0.0",
-  "description": "yt bot",
+  "description": "YouTube Live bot",
   "repository": "https://github.com/pinkilo/yuki-bot.git",
   "author": "Pinkilo <hello@pinkilo.org>",
   "license": "MIT",
@@ -10,13 +10,12 @@
     "prepare": "node prepare.js",
     "prettier/format": "yarn prettier --config .prettierrc.yaml --write public src *.js *.ts",
     "prettier/check": "prettier --config .prettierrc.yaml --check public src *.js *.ts",
-    "compile": "tsc --build --config tsconfig.build.json",
     "watch": "nodemon --config nodemon.config.json",
     "start": "ts-node --project tsconfig.build.json src/index.ts ",
     "test": "jest"
   },
   "dependencies": {
-    "@pinkilo/yukibot": "^1.3.1",
+    "@pinkilo/yukibot": "^1.5.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "googleapis": "^110.0.0",
