@@ -30,10 +30,7 @@ export default (y: YukiBuilder) =>
           return
         }
         await MS.transactionBatch([
-          [
-            winsFight ? channelId : tid,
-            winsFight ? successPayout : defensePayout,
-          ],
+          [winsFight ? channelId : tid, winsFight ? successPayout : defensePayout],
         ])
       }
     )

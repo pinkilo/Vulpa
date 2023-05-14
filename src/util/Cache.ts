@@ -1,4 +1,4 @@
-import { file } from "./util"
+import file from "./file"
 import logger from "winston"
 
 abstract class Cache<V> {
@@ -63,8 +63,7 @@ export class AsyncCache<V> extends Cache<V> {
   async get(key: string): Promise<V> {
     if (!this.map[key]) {
       this.map[key] = await this.fetch(key)
-      if (!this.map[key])
-        logger.debug(`failed to fetch map value for key: "${key}"`)
+      if (!this.map[key]) logger.debug(`failed to fetch map value for key: "${key}"`)
     }
     return this.map[key]
   }

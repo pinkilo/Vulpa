@@ -19,12 +19,9 @@ export const Ranking = (y: YukiBuilder) =>
     c.name = "rank"
     c.alias = ["wealthgap"]
     c.rateLimit.individual = 60 * 2
-    c.invoke = async (
-      { authorDetails: { channelId, displayName } },
-      { command }
-    ) => {
+    c.invoke = async ({ authorDetails: { channelId, displayName } }, { command }) => {
       const wallet = MS.walletCache.get(channelId)
-      const lb = await MS.getLeaderboard()
+      const lb = await MS.getLeaderboard(y)
       const rank = lb.findIndex(([uid]) => uid === channelId)
       let msg =
         command == "rank"
@@ -34,7 +31,7 @@ export const Ranking = (y: YukiBuilder) =>
     }
   })
 
-let leaderboardDisplayDuration: number = 0
+let leaderboardDisplayDuration: number = 60
 
 export const popLeaderboardDisplayTimer = (): number => {
   const out = leaderboardDisplayDuration

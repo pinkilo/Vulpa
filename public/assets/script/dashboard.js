@@ -102,19 +102,17 @@ async function getAlertHistory() {
  * @returns {HTMLElement[]}
  */
 function mapChatToLI(messages) {
-  return messages.map(
-    ({ authorDetails, snippet: { displayMessage, publishedAt } }) => {
-      const li = document.createElement("li")
-      const author = document.createElement("span")
-      const message = document.createElement("span")
-      const date = document.createElement("span")
-      author.innerText = authorDetails.displayName
-      message.innerText = displayMessage
-      date.innerText = publishedAt || ""
-      li.append(author, message, date)
-      return li
-    }
-  )
+  return messages.map(({ authorDetails, snippet: { displayMessage, publishedAt } }) => {
+    const li = document.createElement("li")
+    const author = document.createElement("span")
+    const message = document.createElement("span")
+    const date = document.createElement("span")
+    author.innerText = authorDetails.displayName
+    message.innerText = displayMessage
+    date.innerText = publishedAt || ""
+    li.append(author, message, date)
+    return li
+  })
 }
 
 /**

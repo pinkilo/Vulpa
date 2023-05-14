@@ -62,10 +62,10 @@ function draw() {
 }
 
 async function loadAnimation(name) {
-  const resp = await fetch(`../assets/sprites/fox_orange_${name}.json`)
+  const resp = await fetch(`/assets/sprites/fox_orange_${name}.json`)
   const atlas = await resp.json()
   const img = new Image()
-  img.src = `assets/sprites/fox_orange_${name}.png`
+  img.src = `/assets/sprites/fox_orange_${name}.png`
   const anim = new Animation(img, atlas.frames)
   img.addEventListener("load", () => (anim.ready = true))
   return anim

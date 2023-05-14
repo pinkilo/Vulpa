@@ -1,6 +1,5 @@
-import { AlertEvent, announce } from "../../event"
+import { AlertEvent, announce, file, randFromRange } from "../../util"
 import Alert from "./Alert"
-import { file, randFromRange } from "../../util"
 import { join } from "path"
 import { recordAlert } from "./history"
 
@@ -9,11 +8,8 @@ let _sounds: string[] = null
 
 const _randomSound = async () => {
   if (_sounds === null)
-    _sounds = await file.list(join(file.cwd, "public/assets/audio/backstroke"))
-  return join(
-    "assets/audio/backstroke",
-    _sounds[randFromRange(0, _sounds.length)]
-  )
+    _sounds = await file.list(file.resourceOf("assets/audio/backstroke"))
+  return join("/assets/audio/backstroke", _sounds[randFromRange(0, _sounds.length)])
 }
 
 /** Adds a new Alert to the queue, announces Alert event, records alert to history. */

@@ -45,7 +45,7 @@ function play(soundFile) {
 
 async function getAlert() {
   console.log("fetching alerts")
-  const resp = await fetch("/api/alerts")
+  const resp = await fetch("/api/alerts/next")
   /**
    *
    * @type {{payload: {

@@ -1,12 +1,5 @@
 import MoneySystem from "./MoneySystem"
-import { setSocket } from "./fox"
-import {
-  Alert,
-  enqueueNewAlert,
-  getAlertHistory,
-  nextAlert,
-  replayAlert,
-} from "./alerts"
+import { Alert, enqueueNewAlert, getAlertHistory, nextAlert, replayAlert } from "./alerts"
 import {
   Beans,
   BeatAss,
@@ -21,7 +14,6 @@ import {
 
 export {
   MoneySystem,
-  setSocket,
   getAlertHistory,
   Alert,
   replayAlert,

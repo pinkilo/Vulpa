@@ -8,23 +8,11 @@ export default class Passive {
     _this: Passive
   ) => Promise<boolean>
 
-  readonly invoke: (
-    msg: ChatMessage,
-    tokens: TokenBin,
-    _this: Passive
-  ) => Promise<void>
+  readonly invoke: (msg: ChatMessage, tokens: TokenBin, _this: Passive) => Promise<void>
 
   constructor(
-    predicate: (
-      msg: ChatMessage,
-      tokens: TokenBin,
-      _this: Passive
-    ) => Promise<boolean>,
-    invoke: (
-      msg: ChatMessage,
-      tokens: TokenBin,
-      _this: Passive
-    ) => Promise<void>
+    predicate: (msg: ChatMessage, tokens: TokenBin, _this: Passive) => Promise<boolean>,
+    invoke: (msg: ChatMessage, tokens: TokenBin, _this: Passive) => Promise<void>
   ) {
     this.predicate = predicate
     this.invoke = invoke

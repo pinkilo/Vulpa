@@ -8,17 +8,15 @@ import {
   ListCommands,
   MoneySystem,
   Pushups,
-  setSocket,
   Socials,
   Wallet,
 } from "./yuki"
 import ENV from "./env"
 import { yuki, YukiBuilder } from "@pinkilo/yukibot"
-import { WebSocketServer } from "ws"
 import { file } from "./util"
 import { Credentials } from "google-auth-library"
-import server from "./server"
 import logger from "./logger"
+import serverSetup from "./server/serverSetup"
 
 main()
   .then()
@@ -32,7 +30,8 @@ async function main() {
 
   const bot = await yuki(async (y) => {
     y.yukiConfig.name = "Yuki"
-    y.yukiConfig.prefix = /^[>!].*$/
+    y.yukiConfig.prefix = /^[>!]/
+    //y.yukiConfig.test = ENV.TEST
     y.loggerOverride = logger
     y.googleConfig = {
       clientId: ENV.GOOGLE.G_CLIENT_ID,
@@ -51,13 +50,10 @@ async function main() {
       )
     })
   })
+
+  await serverSetup(bot.express, bot)
   bot.onAuthUpdate(() => bot.start())
   await bot.start()
-
-  const svr = server(bot.express).listen(ENV.PORT, () =>
-    logger.info(`http://localhost:${ENV.PORT}`)
-  )
-  setSocket(new WebSocketServer({ server: svr, path: "/fox" }))
 }
 
 const TokenHandlers = (y: YukiBuilder) => {

@@ -7,9 +7,7 @@ import Schema$LiveChatMessage = youtube_v3.Schema$LiveChatMessage
 
 export default (
   builder: CommandBuilder,
-  cost:
-    | number
-    | ((msg: ChatMessage, tokens: TokenBin, self: Command) => Promise<number>),
+  cost: number | ((msg: ChatMessage, tokens: TokenBin, self: Command) => Promise<number>),
   invoke: (
     msg: Schema$LiveChatMessage,
     tokens: TokenBin,
@@ -19,8 +17,7 @@ export default (
 ) => {
   builder.invoke = async (msg, tokens, self) => {
     // generate cost
-    const computedCost =
-      typeof cost === "function" ? await cost(msg, tokens, self) : cost
+    const computedCost = typeof cost === "function" ? await cost(msg, tokens, self) : cost
     // check affordability
     if (
       computedCost > 0 &&
