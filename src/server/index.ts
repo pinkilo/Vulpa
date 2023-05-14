@@ -1,3 +1,3 @@
-import server from "./server"
+import { setAnimation } from "./Websocket"
 
-export default server
+export { setAnimation }

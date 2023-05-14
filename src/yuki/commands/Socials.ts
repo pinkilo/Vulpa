@@ -24,10 +24,7 @@ const socials: SocialData[] = [
      https://www.youtube.com/aquaticmaster`,
     ["fish", "aquatic", "mastery"],
   ],
-  [
-    "twitch",
-    "Check out the stream on Twitch if you prefer! https://twitch.tv/nlyuki",
-  ],
+  ["twitch", "Check out the stream on Twitch if you prefer! https://twitch.tv/nlyuki"],
 ]
 
 export default async (y: YukiBuilder) => {

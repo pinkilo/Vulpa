@@ -8,36 +8,54 @@ const speechSpan = document.getElementById("speech_bubble")
 const animQueue = []
 let idling = true
 
-const ws = new WebSocket("ws://localhost:3000/fox")
+connect()
 
-ws.addEventListener("open", () => {
-  console.log("websocket connected")
-  speechBubble.hidden = true
-  enqueueAnim(() => speak("Connected!"))
-})
-
-ws.addEventListener("message", (event) => {
-  console.log(event.data, animQueue)
-  /** @type {{text: string, anim: "idle" | "greet" | "attack" | "dance" | "eat"}} */
-  const packet = JSON.parse(event.data)
-  switch (packet.anim) {
-    case "idle":
-      enqueueAnim(idle)
-      break
-    case "attack":
-      enqueueAnim(attack)
-      break
-    case "dance":
-      enqueueAnim(dance)
-      break
-    case "eat":
-      enqueueAnim(eat)
-      break
-    case "greet":
-      enqueueAnim(() => speak(packet.text))
-      break
+function connect() {
+  function reconnect() {
+    const time = 30
+    console.log(`Disconnected, attempting reconnect in ${time} seconds`)
+    setTimeout(connect, 30 * 1000)
   }
-})
+  enqueueAnim(() => speak("Attempting to connect to server"))
+  try {
+    const ws = new WebSocket("ws://localhost:3000/fox")
+
+    ws.addEventListener("open", () => {
+      console.log("websocket connected")
+      speechBubble.hidden = true
+      enqueueAnim(() => speak("Connected!"))
+    })
+
+    ws.addEventListener("message", (event) => {
+      console.log(event.data, animQueue)
+      /** @type {{text: string, anim: "idle" | "greet" | "attack" | "dance" | "eat"}} */
+      const packet = JSON.parse(event.data)
+      switch (packet.anim) {
+        case "idle":
+          enqueueAnim(idle)
+          break
+        case "attack":
+          enqueueAnim(attack)
+          break
+        case "dance":
+          enqueueAnim(dance)
+          break
+        case "eat":
+          enqueueAnim(eat)
+          break
+        case "greet":
+          enqueueAnim(() => speak(packet.text))
+          break
+      }
+    })
+
+    ws.addEventListener("error", reconnect)
+    ws.addEventListener("close", reconnect)
+  } catch (err) {
+    console.error(err)
+    reconnect()
+  }
+}
 
 function enqueueAnim(f) {
   if (idling && ready) {

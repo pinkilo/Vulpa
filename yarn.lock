@@ -1462,10 +1462,10 @@
     chrome-trace-event "^1.0.2"
     nullthrows "^1.1.1"
 
-"@pinkilo/yukibot@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@pinkilo/yukibot/-/yukibot-1.5.0.tgz#05447b675d4c780f08a215749f050c2292c29c76"
-  integrity sha512-jYJuHxnJpi6lrR+jzEjVjVf/ll4PGiNAi6hOIlw6mCTkfwsWUq89RmKa4rL2bYzpu/+EaDrCepoP2nS7gmAIww==
+"@pinkilo/yukibot@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@pinkilo/yukibot/-/yukibot-1.6.1.tgz#d4f8e6ba717c03bb4ade6971061ea951bf833015"
+  integrity sha512-HYd6b+eIh4ftjipTK624bU1LGoMCR+BXugGv7ML7mxGh5nClkNb1eBGVIYVKFu4Xubf0YeDIGMqiUGzm5DiC8Q==
   dependencies:
     express "^4.18.2"
     googleapis "^110.0.0"

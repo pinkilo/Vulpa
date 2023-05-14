@@ -1,6 +1,6 @@
 import { YukiBuilder } from "@pinkilo/yukibot"
 import supercommand from "./supercommand"
-import { setAnimation } from "../fox"
+import { setAnimation } from "../../server"
 import { randFromRange } from "../../util"
 import MoneySystem from "../MoneySystem"
 
@@ -33,8 +33,6 @@ export const Dance = (y: YukiBuilder) =>
     c.rateLimit.individual = 60 * 5
     supercommand(c, 5, async ({ authorDetails: { channelId } }, _, cost) => {
       setAnimation("dance")
-      await MoneySystem.transactionBatch([
-        [channelId, randFromRange(cost, cost * 1.5)],
-      ])
+      await MoneySystem.transactionBatch([[channelId, randFromRange(cost, cost * 1.5)]])
     })
   })

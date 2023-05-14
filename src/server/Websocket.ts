@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from "ws"
-import logger from "winston"
+import logger from "../logger"
 
-export type Animations = "idle" | "greet" | "attack" | "dance" | "eat"
+type Animations = "idle" | "greet" | "attack" | "dance" | "eat"
 
 let socket: WebSocket
 export const setAnimation = (anim: Animations, text?: string): boolean => {
