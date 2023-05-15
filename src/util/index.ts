@@ -10,16 +10,7 @@ import {
   announce,
 } from "./event"
 import { AsyncCache, SyncCache } from "./Cache"
-
-export const randFromRange = (
-  iMin: number,
-  eMax: number,
-  round: boolean = true
-): number => {
-  let val = iMin + Math.random() * eMax
-  if (round) val = Math.floor(val)
-  return val
-}
+import { randFromRange } from "./math"
 
 export {
   file,
@@ -33,4 +24,5 @@ export {
   announce,
   AsyncCache,
   SyncCache,
+  randFromRange,
 }

@@ -11,6 +11,7 @@ import {
   Socials,
   Wallet,
 } from "./commands"
+import { TimedMessages, PassiveMoney } from "./passives"
 
 export {
   MoneySystem,
@@ -28,4 +29,6 @@ export {
   Hydrate,
   Fox,
   Wallet,
+  TimedMessages,
+  PassiveMoney,
 }
