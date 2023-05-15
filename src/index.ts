@@ -7,8 +7,10 @@ import {
   Hydrate,
   ListCommands,
   MoneySystem,
+  PassiveMoney,
   Pushups,
   Socials,
+  TimedMessages,
   Wallet,
 } from "./yuki"
 import ENV from "./env"
@@ -17,6 +19,7 @@ import { file } from "./util"
 import { Credentials } from "google-auth-library"
 import logger from "./logger"
 import serverSetup from "./server/serverSetup"
+import { FoxPassive } from "./yuki/passives"
 
 main()
   .then()
@@ -31,7 +34,7 @@ async function main() {
   const bot = await yuki(async (y) => {
     y.yukiConfig.name = "Yuki"
     y.yukiConfig.prefix = /^[>!]/
-    //y.yukiConfig.test = ENV.TEST
+    y.yukiConfig.test = ENV.TEST
     y.loggerOverride = logger
     y.googleConfig = {
       clientId: ENV.GOOGLE.G_CLIENT_ID,
@@ -41,6 +44,7 @@ async function main() {
     TokenHandlers(y)
 
     await Commands(y)
+    Passives(y)
 
     y.onSubscription(async (sub) => {
       await enqueueNewAlert(
@@ -74,7 +78,7 @@ const TokenHandlers = (y: YukiBuilder) => {
   })
 }
 
-const Commands = async (y: YukiBuilder) =>
+const Commands = (y: YukiBuilder) =>
   Promise.all([
     BeatAss(y),
     ListCommands(y),
@@ -90,3 +94,10 @@ const Commands = async (y: YukiBuilder) =>
     Wallet.View(y),
     Wallet.Leaderboard(y),
   ])
+
+const Passives = (y: YukiBuilder) => {
+  PassiveMoney(y)
+  TimedMessages(y)
+  FoxPassive.ImGood(y)
+  FoxPassive.Greeting(y)
+}
