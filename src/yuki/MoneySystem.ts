@@ -9,7 +9,7 @@ const walletCache = new SyncCache<number>(() => startingWallet)
 /** Modify all given wallets by uid. Use negative numbers to remove money */
 const transactionBatch = async (batch: [string, number][]) => {
   batch.forEach(([uid, amount]) => walletCache.put(uid, walletCache.get(uid) + amount))
-  await walletCache.save(ENV.FILE.CACHE.BANK)
+  if (!ENV.TEST) await walletCache.save(ENV.FILE.CACHE.BANK)
 }
 
 /** @returns sorted list of wallets (larges -> smallest) */
