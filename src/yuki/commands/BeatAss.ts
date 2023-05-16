@@ -1,7 +1,7 @@
 import { YukiBuilder } from "@pinkilo/yukibot"
 import { randomUser } from "../../util/yukiExt"
 import supercommand from "./supercommand"
-import logger from "winston"
+import logger from "../../logger"
 import MS from "../MoneySystem"
 
 export default (y: YukiBuilder) =>
