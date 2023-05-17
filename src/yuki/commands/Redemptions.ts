@@ -40,18 +40,16 @@ export const Pushups = (y: YukiBuilder) =>
     c.alias = ["pushups"]
     c.rateLimit.global = 60 * 10
     c.rateLimit.individual = 60 * 60
+    const defaultCount = 10
     supercommand(
       c,
       async (_, tokens) => {
-        const base = 10
-        const baseCost = 100
-        const count = parseInt(tokens.params[0]) || base
-        const addedCost = Math.max(0, count - base) * baseCost * 0.5
-        return baseCost + addedCost
+        const unitCost = 50
+        const count = parseInt(tokens.params[0]) || defaultCount
+        return count * unitCost
       },
       async ({ authorDetails: { channelId, displayName } }, tokens, cost) => {
-        const base = 10
-        const count = parseInt(tokens.params[0]) || base
+        const count = parseInt(tokens.params[0]) || defaultCount
         await enqueueNewAlert(`Pushups: ${count}`, displayName, channelId)
         await y.sendMessage(
           `${displayName} redeemed ${count} pushups for ${cost} ${MoneySystem.name}s`
