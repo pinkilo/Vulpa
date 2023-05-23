@@ -9,32 +9,18 @@ export const FitCheck = (y: YukiBuilder) =>
     c.name = "fitcheck"
     c.alias = ["fit", "outfit"]
     c.rateLimit.global = 60 * 10
-    supercommand(
-      c,
-      100,
-      async ({ authorDetails }) =>
-        await enqueueNewAlert(
-          "Fit Check Redemption",
-          authorDetails.displayName,
-          authorDetails.channelId
-        )
+    supercommand(c, 100, ({ authorDetails: { channelId, displayName } }) =>
+      enqueueNewAlert("Fit Check!", displayName, channelId)
     )
   })
 
 export const Hydrate = (y: YukiBuilder) =>
   y.command((c) => {
     c.name = "hydrate"
-    c.alias = ["drink", "water", "drinkwater"]
+    c.alias = ["drink", "water"]
     c.rateLimit.global = 60 * 5
-    supercommand(
-      c,
-      10,
-      async ({ authorDetails }) =>
-        await enqueueNewAlert(
-          "Hydrate!",
-          authorDetails.displayName,
-          authorDetails.channelId
-        )
+    supercommand(c, 10, ({ authorDetails: { channelId, displayName } }) =>
+      enqueueNewAlert("Hydrate!", displayName, channelId)
     )
   })
 
@@ -47,9 +33,9 @@ export const Pushups = (y: YukiBuilder) =>
     const defaultCount = 10
     supercommand(
       c,
-      async (_, tokens) => {
+      async (_, { params: [p1] }) => {
         const unitCost = 50
-        const count = parseInt(tokens.params[0]) || defaultCount
+        const count = parseInt(p1) || defaultCount
         return count * unitCost
       },
       async ({ authorDetails: { channelId, displayName } }, tokens, cost) => {
