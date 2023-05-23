@@ -1,8 +1,9 @@
 import { testYuki } from "@pinkilo/yukibot"
 import { ListCommands } from "../../yuki"
 
+let sendSpy
+
 it("should send message", async () => {
-  let sendSpy
   const ty = await testYuki((y) => {
     y.yukiConfig.prefix = /^>/
     y.googleConfig = { clientId: "", clientSecret: "", redirectUri: "" }
