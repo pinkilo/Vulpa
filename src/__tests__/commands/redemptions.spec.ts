@@ -22,26 +22,44 @@ jest.mock("../../yuki/MoneySystem", () => ({
 
 let ty: TestYuki
 
-it("should enqueue alert on hydrate", async () => {
-  ty = await testYuki((y) => {
-    y.yukiConfig.prefix = /^>/
-    y.googleConfig = { clientId: "", clientSecret: "", redirectUri: "" }
-    y.tokenLoader = async () => ({})
-    Hydrate(y)
-  })
-  await ty.feedMessage(`>hydrate`)
-  expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+beforeEach(() => {
+  ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 0)
 })
 
-it("should enqueue alert on fitcheck", async () => {
-  ty = await testYuki((y) => {
-    y.yukiConfig.prefix = /^>/
-    y.googleConfig = { clientId: "", clientSecret: "", redirectUri: "" }
-    y.tokenLoader = async () => ({})
-    FitCheck(y)
+describe("fit check", () => {
+  beforeEach(async () => {
+    ty = await testYuki((y) => {
+      y.yukiConfig.prefix = /^>/
+      FitCheck(y)
+    })
   })
-  await ty.feedMessage(`>fitcheck`)
-  expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+  it("should reject without cash", async () => {
+    await ty.feedMessage(`>hydrate`)
+    expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+  })
+  it("should enqueue alert on fitcheck", async () => {
+    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
+    await ty.feedMessage(`>fitcheck`)
+    expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe("hydrate", () => {
+  beforeEach(async () => {
+    ty = await testYuki((y) => {
+      y.yukiConfig.prefix = /^>/
+      Hydrate(y)
+    })
+  })
+  it("should reject without cash", async () => {
+    await ty.feedMessage(`>hydrate`)
+    expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+  })
+  it("should enqueue alert on hydrate", async () => {
+    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
+    await ty.feedMessage(`>hydrate`)
+    expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+  })
 })
 
 describe("pushups", () => {
@@ -50,8 +68,6 @@ describe("pushups", () => {
   beforeEach(async () => {
     ty = await testYuki((y) => {
       y.yukiConfig.prefix = /^>/
-      y.googleConfig = { clientId: "", clientSecret: "", redirectUri: "" }
-      y.tokenLoader = async () => ({})
       Pushups(y)
       sendSpy = jest.spyOn(y, "sendMessage")
     })

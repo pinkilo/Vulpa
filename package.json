@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@pinkilo/yukibot": "^1.8.1",
+    "@pinkilo/yukibot": "1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "googleapis": "^110.0.0",
