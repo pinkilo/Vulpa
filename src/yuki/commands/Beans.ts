@@ -5,7 +5,7 @@ import { randFromRange } from "../../util"
 export default (y: YukiBuilder) =>
   y.command(async (c) => {
     c.name = "beans"
-    c.alias = ["🫘", "beans"]
+    c.alias = ["🫘", "bean"]
     c.rateLimit.individual = 120
     command(c, 0, async (_, { command }) => {
       let msg: string
@@ -14,7 +14,7 @@ export default (y: YukiBuilder) =>
           msg = "🫘"
           break
         case "beans":
-          msg = "🫘".repeat(randFromRange(1, 10))
+          msg = "🫘".repeat(randFromRange(2, 10))
           break
         case "🫘":
           msg = "bean!"
