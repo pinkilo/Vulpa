@@ -27,6 +27,6 @@ const socials: SocialData[] = [
   ["twitch", "Check out the stream on Twitch if you prefer! https://twitch.tv/nlyuki"],
 ]
 
-export default async (y: YukiBuilder) => {
-  for (let s of socials) await social(y, s)
+export default (y: YukiBuilder) => {
+  for (let s of socials) social(y, s)
 }

@@ -1,6 +1,6 @@
 import { YukiBuilder } from "@pinkilo/yukibot"
 
-export default async (y: YukiBuilder) =>
+export default (y: YukiBuilder) =>
   y.command(async (c) => {
     c.name = "commands"
     c.alias = ["cmds", "cmd"]

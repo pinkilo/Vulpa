@@ -35,15 +35,22 @@ async function main() {
     y.yukiConfig.name = "Yuki"
     y.yukiConfig.prefix = /^[>!]/
     y.yukiConfig.test = ENV.TEST
+    y.yukiConfig.subscriptionPollRate = 60 * 5
+    y.yukiConfig.broadcastPollRate = 60 * 5
     y.loggerOverride = logger
     y.googleConfig = {
       clientId: ENV.GOOGLE.G_CLIENT_ID,
       clientSecret: ENV.GOOGLE.G_CLIENT_SECRET,
       redirectUri: ENV.GOOGLE.G_REDIRECT_URI,
     }
-    TokenHandlers(y)
+    y.userCacheLoader = async () => {
+      if (!file.exists(ENV.FILE.CACHE.USER)) return
+      const buffer = await file.read(ENV.FILE.CACHE.USER)
+      return JSON.parse(buffer + "")
+    }
 
-    await Commands(y)
+    TokenHandlers(y)
+    Commands(y)
     Passives(y)
 
     y.onSubscription(async (sub) => {
@@ -78,22 +85,21 @@ const TokenHandlers = (y: YukiBuilder) => {
   })
 }
 
-const Commands = (y: YukiBuilder) =>
-  Promise.all([
-    BeatAss(y),
-    ListCommands(y),
-    Beans(y),
-    Socials(y),
-    Fox.Attack(y),
-    Fox.Feed(y),
-    Fox.Dance(y),
-    FitCheck(y),
-    Pushups(y),
-    Hydrate(y),
-    Wallet.Ranking(y),
-    Wallet.View(y),
-    Wallet.Leaderboard(y),
-  ])
+const Commands = (y: YukiBuilder) => {
+  BeatAss(y)
+  ListCommands(y)
+  Beans(y)
+  Socials(y)
+  Fox.Attack(y)
+  Fox.Feed(y)
+  Fox.Dance(y)
+  FitCheck(y)
+  Pushups(y)
+  Hydrate(y)
+  Wallet.Ranking(y)
+  Wallet.View(y)
+  Wallet.Leaderboard(y)
+}
 
 const Passives = (y: YukiBuilder) => {
   PassiveMoney(y)
