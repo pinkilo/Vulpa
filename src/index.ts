@@ -28,7 +28,6 @@ main()
 async function main() {
   logger.info(`Running in ${ENV.NODE_ENV}`)
   // load caches
-  // await yt.users.userCache.load(ENV.FILE.CACHE.USER)
   await MoneySystem.walletCache.load(ENV.FILE.CACHE.BANK)
 
   const bot = await yuki(async (y) => {
@@ -63,7 +62,7 @@ async function main() {
   })
 
   await serverSetup(bot.express, bot)
-  bot.onAuthUpdate(() => bot.start())
+  bot.onAuthUpdate(() => bot.restart())
   await bot.start()
 }
 
