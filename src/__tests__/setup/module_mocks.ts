@@ -1,13 +1,24 @@
-jest.mock("winston", () => {
-  return {
-    __esModule: true,
-    default: {
-      info: jest.fn(),
-      debug: jest.fn(),
-      error: jest.fn(),
-    },
-  }
-})
+jest.mock("winston", () => ({
+  esModule: true,
+  createLogger: jest.fn().mockImplementation(() => ({
+    error: jest.fn(),
+    info: jest.fn(),
+    http: jest.fn(),
+    debug: jest.fn(),
+    alert: jest.fn(),
+    warn: jest.fn(),
+  })),
+  transports: {
+    Console: jest.fn(),
+  },
+  format: {
+    combine: jest.fn(),
+    colorize: jest.fn(),
+    timestamp: jest.fn(),
+    printf: jest.fn(),
+    errors: jest.fn(),
+  },
+}))
 
 jest.mock("nanoid", () => ({
   esModule: true,
@@ -25,9 +36,3 @@ jest.mock("../../util/file", () => {
     },
   }
 })
-
-jest.mock("../../event", () => ({
-  __esModule: true,
-  ...jest.requireActual("../../event"),
-  announce: jest.fn().mockImplementation((event) => event),
-}))
