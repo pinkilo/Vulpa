@@ -29,6 +29,7 @@ export default (y: YukiBuilder) =>
           logger.error("failed to send message")
           return
         }
+        await MS.transactionBatch([[channelId, -cost]])
         await MS.transactionBatch([
           [winsFight ? channelId : tid, winsFight ? successPayout : defensePayout],
         ])

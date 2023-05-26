@@ -9,8 +9,13 @@ export const FitCheck = (y: YukiBuilder) =>
     c.name = "fitcheck"
     c.alias = ["fit", "outfit"]
     c.rateLimit.global = 60 * 10
-    supercommand(c, 100, ({ authorDetails: { channelId, displayName } }) =>
-      enqueueNewAlert("Fit Check!", displayName, channelId)
+    supercommand(
+      c,
+      100,
+      async ({ authorDetails: { channelId, displayName } }, _, cost) => {
+        await MS.transactionBatch([[channelId, -cost]])
+        await enqueueNewAlert("Fit Check!", displayName, channelId)
+      }
     )
   })
 
@@ -19,8 +24,13 @@ export const Hydrate = (y: YukiBuilder) =>
     c.name = "hydrate"
     c.alias = ["drink", "water"]
     c.rateLimit.global = 60 * 5
-    supercommand(c, 10, ({ authorDetails: { channelId, displayName } }) =>
-      enqueueNewAlert("Hydrate!", displayName, channelId)
+    supercommand(
+      c,
+      10,
+      async ({ authorDetails: { channelId, displayName } }, _, cost) => {
+        await MS.transactionBatch([[channelId, -cost]])
+        await enqueueNewAlert("Hydrate!", displayName, channelId)
+      }
     )
   })
 
@@ -40,7 +50,7 @@ export const Pushups = (y: YukiBuilder) =>
       },
       async ({ authorDetails: { channelId, displayName } }, tokens, cost) => {
         const count = parseInt(tokens.params[0]) || defaultCount
-        await MS.transactionBatch([[channelId, cost]])
+        await MS.transactionBatch([[channelId, -cost]])
         await enqueueNewAlert(`Pushups: ${count}`, displayName, channelId)
         await y.sendMessage(
           `${displayName} redeemed ${count} pushups for ${cost} ${MoneySystem.name}s`
