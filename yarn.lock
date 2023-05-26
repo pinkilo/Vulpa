@@ -1463,9 +1463,9 @@
     nullthrows "^1.1.1"
 
 "@pinkilo/yukibot@1":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@pinkilo/yukibot/-/yukibot-1.8.2.tgz#97964954b5ca268a08423589396519086d456fe4"
-  integrity sha512-i4r2+foYToyg0q7P5IxvB2ec4KJTfVXFHF1y17jHzCB6ijj1nP/3YHECVqewuZ8lptNRa+apun8B5AKUifd2yg==
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@pinkilo/yukibot/-/yukibot-1.8.3.tgz#3dd8a1de418e806867bf2fe307a1186e7ef26144"
+  integrity sha512-L+9RcuNTjBzuK2ZpWnQnpH/4s61RstBKHUTg8DLtQLOudVfuXqUwUF9J9l61DxDpqNMGSjMrOghhcb7H/ZwhkQ==
   dependencies:
     express "^4.18.2"
     googleapis "^110.0.0"

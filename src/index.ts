@@ -47,6 +47,7 @@ async function main() {
       const buffer = await file.read(ENV.FILE.CACHE.USER)
       return JSON.parse(buffer + "")
     }
+    y.routes = { app: "/app", api: "/api" }
 
     TokenHandlers(y)
     Commands(y)

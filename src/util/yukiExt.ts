@@ -1,5 +1,5 @@
 import { YukiBuilder } from "@pinkilo/yukibot"
-import { randFromRange } from "./index"
+import { randFromRange } from "./math"
 
 export const randomUser = (y: YukiBuilder, ...exclude: string[]) => {
   const users = y.cachedUsers.filter((u) => !exclude.includes(u.id))

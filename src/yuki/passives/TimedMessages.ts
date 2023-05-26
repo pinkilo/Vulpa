@@ -40,7 +40,7 @@ const tms: TimedMessage[] = [
 export default (y: YukiBuilder) =>
   y.memoryPassive<TimedMessage[]>(
     tms,
-    async (_, __, self) => self.memory.some((tm) => tm.counter <= 0),
+    async () => true,
     async ({ authorDetails: { channelId } }, __, self) => {
       // add to delay after the bot has spoken
       // otherwise reduce counter
