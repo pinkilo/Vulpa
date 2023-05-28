@@ -21,7 +21,7 @@ export const Ranking = (y: YukiBuilder) =>
     c.rateLimit.individual = 60 * 2
     c.invoke = async ({ authorDetails: { channelId, displayName } }, { command }) => {
       const wallet = MS.walletCache.get(channelId)
-      const lb = await MS.getLeaderboard(y)
+      const lb = await MS.leaderboard(y)
       const rank = lb.findIndex(([uid]) => uid === channelId)
       let msg =
         command == "rank"

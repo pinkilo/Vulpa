@@ -29,9 +29,7 @@ const alertApi = Router()
 
 export const setupApiRoutes = (y: YukiBuilder | Yuki): Router => {
   const leaderboardApi = Router()
-    .get("/", async (_, res) =>
-      res.send(packetier(true, await MS.getLeaderboard(y, true)))
-    )
+    .get("/", async (_, res) => res.send(packetier(true, await MS.leaderboard(y, true))))
     .get("/duration", (_, res) => res.send(packetier(true, popLeaderboardDisplayTimer())))
 
   return Router()

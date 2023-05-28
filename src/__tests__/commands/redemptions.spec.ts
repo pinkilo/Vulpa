@@ -1,7 +1,7 @@
-import { testYuki } from "@pinkilo/yukibot/"
-import { TestYuki } from "@pinkilo/yukibot"
-import { enqueueNewAlert, Hydrate, Pushups, FitCheck } from "../../yuki"
+import { testYuki, TestYuki } from "@pinkilo/yukibot"
+import { enqueueNewAlert, FitCheck, Hydrate, Pushups } from "../../yuki"
 import MoneySystem from "../../yuki/MoneySystem"
+import TransactionBuilder from "../../yuki/MoneySystem/TransactionBuilder"
 
 jest.mock("../../yuki/alerts", () => ({
   __esModule: true,
@@ -9,21 +9,19 @@ jest.mock("../../yuki/alerts", () => ({
   enqueueNewAlert: jest.fn(),
 }))
 
-jest.mock("../../yuki/MoneySystem", () => ({
-  __esModule: true,
-  default: {
-    ...jest.requireActual("../../yuki/MoneySystem").default,
-    transactionBatch: jest.fn(),
-    walletCache: {
-      get: jest.fn().mockImplementation(() => 0),
-    },
-  },
-}))
-
 let ty: TestYuki
+let depositSpy: jest.SpyInstance
+let withdrawSpy: jest.SpyInstance
+let executeSpy: jest.SpyInstance
 
 beforeEach(() => {
-  ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 0)
+  depositSpy = jest
+    .spyOn(TransactionBuilder.prototype, "deposit")
+    .mockImplementation(() => new TransactionBuilder())
+  withdrawSpy = jest
+    .spyOn(TransactionBuilder.prototype, "withdraw")
+    .mockImplementation(() => new TransactionBuilder())
+  executeSpy = jest.spyOn(TransactionBuilder.prototype, "execute").mockImplementation()
 })
 
 describe("fit check", () => {
@@ -34,19 +32,42 @@ describe("fit check", () => {
       FitCheck(y)
     })
   })
-  it("should reject without cash", async () => {
-    await ty.feedMessage(command)
-    expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+
+  describe("cost rejection", () => {
+    beforeEach(() => {
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 0)
+    })
+
+    it("should not add alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+    })
+
+    it("should not execute transaction", async () => {
+      await ty.feedMessage(command)
+      expect(executeSpy).toHaveBeenCalledTimes(0)
+    })
   })
-  it("should enqueue alert", async () => {
-    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
-    await ty.feedMessage(command)
-    expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
-  })
-  it("should modify bank on success", async () => {
-    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
-    await ty.feedMessage(command)
-    expect(MoneySystem.transactionBatch).toHaveBeenCalledTimes(1)
+
+  describe("cost met", () => {
+    beforeEach(() => {
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 100000)
+    })
+
+    it("should enqueue alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+    })
+
+    it("should withdraw", async () => {
+      await ty.feedMessage(command)
+      expect(withdrawSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it("should execute transaction", async () => {
+      await ty.feedMessage(command)
+      expect(executeSpy).toHaveBeenCalledTimes(1)
+    })
   })
 })
 
@@ -58,19 +79,42 @@ describe("hydrate", () => {
       Hydrate(y)
     })
   })
-  it("should reject without cash", async () => {
-    await ty.feedMessage(command)
-    expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+
+  describe("cost rejection", () => {
+    beforeEach(() => {
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 0)
+    })
+
+    it("should not add alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+    })
+
+    it("should not execute transaction", async () => {
+      await ty.feedMessage(command)
+      expect(executeSpy).toHaveBeenCalledTimes(0)
+    })
   })
-  it("should enqueue alert on hydrate", async () => {
-    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
-    await ty.feedMessage(command)
-    expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
-  })
-  it("should modify bank on success", async () => {
-    ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 100)
-    await ty.feedMessage(command)
-    expect(MoneySystem.transactionBatch).toHaveBeenCalledTimes(1)
+
+  describe("cost met", () => {
+    beforeEach(() => {
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 1000000)
+    })
+
+    it("should enqueue alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+    })
+
+    it("should withdraw", async () => {
+      await ty.feedMessage(command)
+      expect(withdrawSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it("should execute transaction", async () => {
+      await ty.feedMessage(command)
+      expect(executeSpy).toHaveBeenCalledTimes(1)
+    })
   })
 })
 
@@ -86,32 +130,45 @@ describe("pushups", () => {
     })
   })
 
-  it("should not invoke without money", async () => {
-    await ty.feedMessage(">pushups")
-    expect(sendSpy).toHaveBeenCalledTimes(0)
-    expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
-    expect(MoneySystem.transactionBatch).toHaveBeenCalledTimes(0)
-  })
-  it("should check bank", async () => {
-    await ty.feedMessage(command)
-    expect(MoneySystem.walletCache.get).toHaveBeenCalledTimes(1)
+  describe("cost rejection", () => {
+    beforeEach(() => {
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 0)
+    })
+
+    it("should not add alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(0)
+    })
+
+    it("should not execute transaction", async () => {
+      await ty.feedMessage(command)
+      expect(executeSpy).toHaveBeenCalledTimes(0)
+    })
   })
 
-  describe("with money", () => {
+  describe("cost met", () => {
     beforeEach(() => {
-      ;(MoneySystem.walletCache.get as jest.Mock).mockImplementation(() => 10000)
+      jest.spyOn(MoneySystem.walletCache, "get").mockImplementation(() => 100000)
     })
+
+    it("should enqueue alert", async () => {
+      await ty.feedMessage(command)
+      expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+    })
+
     it("should send message", async () => {
       await ty.feedMessage(command)
       expect(sendSpy).toHaveBeenCalledTimes(1)
     })
-    it("should enqueue new alert", async () => {
+
+    it("should withdraw", async () => {
       await ty.feedMessage(command)
-      expect(enqueueNewAlert).toHaveBeenCalledTimes(1)
+      expect(withdrawSpy).toHaveBeenCalledTimes(1)
     })
-    it("should modify bank on success", async () => {
+
+    it("should execute transaction", async () => {
       await ty.feedMessage(command)
-      expect(MoneySystem.transactionBatch).toHaveBeenCalledTimes(1)
+      expect(executeSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

@@ -1,6 +1,5 @@
-import { testYuki } from "@pinkilo/yukibot/"
+import { testYuki, TestYuki } from "@pinkilo/yukibot"
 import { Socials } from "../../yuki"
-import { TestYuki } from "@pinkilo/yukibot"
 
 const socials = ["discord", "twitter", "youtube", "fish", "aquatic", "mastery", "twitch"]
 let sendSpy

@@ -17,7 +17,7 @@ export default (y: YukiBuilder) =>
       }
       if (!cooldowns.has(channelId)) {
         logger.debug(`adding passive money to ${channelId}`)
-        await MoneySystem.transactionBatch([[channelId, moneyEarnRate]])
+        await MoneySystem.transact().deposit(channelId, moneyEarnRate).execute()
         cooldowns.set(channelId, moneyCooldown)
       }
     }

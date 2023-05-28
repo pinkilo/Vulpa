@@ -22,17 +22,39 @@ jest.mock("winston", () => ({
 
 jest.mock("nanoid", () => ({
   esModule: true,
-  nanoid: jest.fn().mockImplementation(() => "nanoid_id"),
+  nanoid: jest
+    .fn()
+    .mockName("nanoid")
+    .mockImplementation(() => "nanoid_id"),
 }))
 
 jest.mock("../../util/file", () => {
   return {
     __esModule: true,
     default: {
-      write: jest.fn().mockImplementation((_: string, data: string) => data),
-      read: jest.fn(),
-      list: jest.fn(),
-      exists: jest.fn().mockImplementation(() => false),
+      write: jest
+        .fn()
+        .mockName("file write")
+        .mockImplementation((_: string, data: string) => data),
+      read: jest.fn().mockName("file read"),
+      list: jest.fn().mockName("file list"),
+      exists: jest
+        .fn()
+        .mockName("file exists")
+        .mockImplementation(() => false),
+    },
+  }
+})
+
+jest.mock("../../yuki/MoneySystem/config", () => {
+  const actual = jest.requireActual("../../yuki/MoneySystem/config")
+  return {
+    __esModule: true,
+    ...actual,
+    walletCache: {
+      get: jest.fn(() => actual.startingWallet),
+      put: jest.fn(),
+      save: jest.fn(),
     },
   }
 })

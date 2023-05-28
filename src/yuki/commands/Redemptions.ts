@@ -13,7 +13,7 @@ export const FitCheck = (y: YukiBuilder) =>
       c,
       100,
       async ({ authorDetails: { channelId, displayName } }, _, cost) => {
-        await MS.transactionBatch([[channelId, -cost]])
+        await MS.transact().withdraw(channelId, cost).execute()
         await enqueueNewAlert("Fit Check!", displayName, channelId)
       }
     )
@@ -28,7 +28,7 @@ export const Hydrate = (y: YukiBuilder) =>
       c,
       10,
       async ({ authorDetails: { channelId, displayName } }, _, cost) => {
-        await MS.transactionBatch([[channelId, -cost]])
+        await MS.transact().withdraw(channelId, cost).execute()
         await enqueueNewAlert("Hydrate!", displayName, channelId)
       }
     )
@@ -50,7 +50,7 @@ export const Pushups = (y: YukiBuilder) =>
       },
       async ({ authorDetails: { channelId, displayName } }, tokens, cost) => {
         const count = parseInt(tokens.params[0]) || defaultCount
-        await MS.transactionBatch([[channelId, -cost]])
+        await MS.transact().withdraw(channelId, cost).execute()
         await enqueueNewAlert(`Pushups: ${count}`, displayName, channelId)
         await y.sendMessage(
           `${displayName} redeemed ${count} pushups for ${cost} ${MoneySystem.name}s`

@@ -2,7 +2,7 @@ import { Command, CommandBuilder, TokenBin } from "@pinkilo/yukibot"
 import { ChatMessage } from "../../types/google"
 import { youtube_v3 } from "googleapis"
 import MS from "../MoneySystem"
-import logger from "winston"
+import logger from "../../logger"
 import Schema$LiveChatMessage = youtube_v3.Schema$LiveChatMessage
 
 export default (

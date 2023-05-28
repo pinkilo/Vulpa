@@ -20,9 +20,7 @@ export const Feed = (y: YukiBuilder) =>
     c.rateLimit.individual = 60 * 5
     supercommand(c, 5, async ({ authorDetails: { channelId } }, _, cost) => {
       setAnimation("eat")
-      await MoneySystem.transactionBatch([
-        [channelId, randFromRange(cost * 1.1, cost * 2)],
-      ])
+      await MoneySystem.transact().deposit(channelId, randFromRange(cost * 1.1, cost * 2))
     })
   })
 
@@ -33,6 +31,6 @@ export const Dance = (y: YukiBuilder) =>
     c.rateLimit.individual = 60 * 5
     supercommand(c, 5, async ({ authorDetails: { channelId } }, _, cost) => {
       setAnimation("dance")
-      await MoneySystem.transactionBatch([[channelId, randFromRange(cost, cost * 1.5)]])
+      await MoneySystem.transact().deposit(channelId, randFromRange(cost, cost * 1.5))
     })
   })

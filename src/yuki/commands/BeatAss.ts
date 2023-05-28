@@ -13,26 +13,29 @@ export default (y: YukiBuilder) =>
       c,
       10,
       async ({ authorDetails: { displayName, channelId } }, _, cost) => {
-        const rUser = randomUser(y, channelId)
-        const { id: tid, name } = rUser
-        logger.debug("running beatass", { target: name, displayName })
-        const winsFight = Math.random() > 0.55
+        const randomTarget = randomUser(y, channelId)
+        const { id: targetID, name: targetName } = randomTarget
+        logger.debug("running beatass", { target: targetName, displayName })
+        const initiatorWins = Math.random() > 0.55
         const successPayout = cost * 2
         const defensePayout = cost
         const { success } = await y.sendMessage(
-          winsFight
-            ? `${displayName} beat ${name} 's ass (+${successPayout})`
-            : `${displayName} tried to beat ${name} 's ass but failed and got 
+          initiatorWins
+            ? `${displayName} beat ${targetName} 's ass (+${successPayout})`
+            : `${displayName} tried to beat ${targetName} 's ass but failed and got 
           the shit smacked outta them (+${defensePayout} to the defender)`
         )
         if (!success) {
           logger.error("failed to send message")
           return
         }
-        await MS.transactionBatch([[channelId, -cost]])
-        await MS.transactionBatch([
-          [winsFight ? channelId : tid, winsFight ? successPayout : defensePayout],
-        ])
+        await MS.transact()
+          .withdraw(channelId, cost)
+          .deposit(
+            initiatorWins ? channelId : targetID,
+            initiatorWins ? successPayout : defensePayout
+          )
+          .execute()
       }
     )
   })

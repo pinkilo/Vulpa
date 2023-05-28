@@ -10,6 +10,7 @@
     "prepare": "node prepare.js",
     "prettier/format": "yarn prettier --config .prettierrc.yaml --write public src *.js *.ts",
     "prettier/check": "prettier --config .prettierrc.yaml --check public src *.js *.ts",
+    "ts/watch": "tsc --project tsconfig.build.json --watch",
     "watch": "nodemon --config nodemon.config.json",
     "start": "ts-node --project tsconfig.build.json src/index.ts ",
     "test": "jest"
