@@ -33,7 +33,7 @@ async function main() {
   const bot = await yuki(async (y) => {
     y.yukiConfig.name = "Yuki"
     y.yukiConfig.prefix = /^[>!]/
-    y.yukiConfig.test = ENV.TEST
+    y.yukiConfig.test = ENV.DEV
     y.yukiConfig.subscriptionPollRate = 60 * 5
     y.yukiConfig.broadcastPollRate = 60 * 5
     y.loggerOverride = logger

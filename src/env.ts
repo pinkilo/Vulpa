@@ -3,11 +3,11 @@ import { config } from "dotenv"
 
 config()
 
-const isTest = process.env.NODE_ENV === "test"
-
 export default {
   NODE_ENV: process.env.NODE_ENV,
-  TEST: isTest,
+  PROD: process.env.NODE_ENV === "prod",
+  DEV: process.env.NODE_ENV === "dev",
+  TEST: process.env.NODE_ENV === "test",
   PORT: parseInt(process.env.PORT),
   FILE: {
     CACHE: {
