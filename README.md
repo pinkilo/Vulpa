@@ -1,7 +1,8 @@
-# Yuki the YouTube Fox
+# Vulpa
 
-Yuki is a YouTube livestream bot built from the ground up for unique interactivity
-both on screen and in the chat.
+Vulpa [wool-pah] is a YouTube livestream bot built using the 
+[Yukibot framework](https://github.com/pinkilo/Yukibot) 
+for unique interactivity both on screen and in the chat.
 
 [![Build CI](https://github.com/pinkilo/yuki-bot/actions/workflows/CI.yml/badge.svg)](https://github.com/pinkilo/yuki-bot/actions/workflows/CI.yml)
 
