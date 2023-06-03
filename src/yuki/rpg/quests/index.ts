@@ -1,3 +1,3 @@
-import Quest, { QuestState } from "./Quest"
+import Quest, { QuestStatus } from "./Quest"
 
-export { QuestState, Quest }
+export { QuestStatus, Quest }

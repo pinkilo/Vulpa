@@ -1,32 +1,24 @@
-import { randFromRange } from "../../../util"
+import { QuestStatus } from "./QuestSystemState"
 
-export enum QuestState {
-  DORMANT,
-  ANNOUNCED,
-  RUNNING,
-  ENDING,
+type Quest = {
+  readonly playerIDs: Set<string>
+  readonly limits: [min: number, max?: number]
+  /** entry cost */
+  readonly cost: number
+  joinMessage(name: string): string
+  step(): Promise<QuestStatus>
 }
 
-export default abstract class Quest {
-  protected static readonly cooldown: number = 50
-  protected static cooldownAt: number = Quest.cooldown
-
-  protected playerIDs: Set<string> = new Set<string>()
-  protected _questState: QuestState = QuestState.DORMANT
-
-  abstract readonly names: string[]
-  abstract readonly limits: { max: number; min: number }
-  abstract readonly announcements: string[]
-  abstract readonly startProbability: number
-
-  async announce(sender: (msg: string) => Promise<unknown>): Promise<void> {
-    await sender(
-      this.announcements[randFromRange(0, this.announcements.length)] + ` (">join")`
-    )
-    this._questState = QuestState.ANNOUNCED
-  }
-
-  join(playerID: string) {
-    this.playerIDs.add(playerID)
-  }
+export const Heist: Quest = {
+  playerIDs: new Set(),
+  limits: [3],
+  cost: 100,
+  joinMessage: (name: string): string => `${name} joins the heist!`,
+  async step() {
+    return QuestStatus.ANNOUNCED
+  },
 }
+
+export const randomQuest = () => Heist
+
+export default Quest
