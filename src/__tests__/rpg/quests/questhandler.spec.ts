@@ -19,10 +19,11 @@ let qm: typeof import("../../../yuki/rpg/quests/QuestSystemState")
 beforeEach(async () => {
   quest = {
     playerIDs: new Set(),
-    joinMessage: jest.fn(),
+    joinMessage: jest.fn(() => "join"),
     cost: 1,
-    step: jest.fn(),
+    step: jest.fn(async (status) => status + 1),
     limits: [1],
+    announceMessage: jest.fn(() => "announce"),
   }
   qm = await import("../../../yuki/rpg/quests/QuestSystemState")
   jest.resetModules()
@@ -40,6 +41,20 @@ describe("Quest Passive", () => {
     await yuki.feedMessage("_")
     expect(qm.questActive()).toBe(true)
   })
+  it("should send announce message when quest activates", async () => {
+    await yuki.feedMessage("_")
+    expect(quest.announceMessage).toHaveBeenCalled()
+    expect(sendSpy).toHaveBeenCalledWith("announce")
+  })
+  it("should step quest on each message after activation", async () => {
+    await yuki.feedMessage(`-1`)
+    expect(quest.step).toHaveBeenCalledTimes(0)
+
+    for (let i = qm.QuestStatus.ANNOUNCED.valueOf(); i == qm.QuestStatus.ENDING; i++) {
+      await yuki.feedMessage(`${i}`)
+      expect(quest.step).toHaveBeenCalledWith(i)
+    }
+  })
 })
 
 describe("Quest Command", () => {
@@ -52,9 +67,19 @@ describe("Quest Command", () => {
     })
   })
 
-  it("should do nothing with no quest set", async () => {
-    await yuki.feedMessage(command)
-    expect(sendSpy).toHaveBeenCalledTimes(0)
+  describe("Quest Inactive", () => {
+    it("should not send message", async () => {
+      await yuki.feedMessage(command)
+      expect(sendSpy).toHaveBeenCalledTimes(0)
+    })
+    it("should not add user to quest", async () => {
+      await yuki.feedMessage(command)
+      expect(quest.playerIDs.size).toEqual(0)
+    })
+    it("should not step quest", async () => {
+      await yuki.feedMessage(command)
+      expect(quest.step).toHaveBeenCalledTimes(0)
+    })
   })
 
   describe("Quest Active", () => {
@@ -65,7 +90,24 @@ describe("Quest Command", () => {
         sendSpy = jest.spyOn(y, "sendMessage")
       })
       await yuki.feedMessage("_")
+      sendSpy.mockReset()
     })
-    it("should ", async () => {})
+    it("should add user to quest", async () => {
+      const { authorDetails } = await yuki.feedMessage(command)
+      expect(quest.playerIDs.has(authorDetails.channelId)).toBe(true)
+    })
+    it("should step quest", async () => {
+      await yuki.feedMessage(command)
+      expect(quest.step).toHaveBeenCalledTimes(1)
+    })
+    it("should send join message", async () => {
+      const {
+        authorDetails: { displayName },
+      } = await yuki.feedMessage(command)
+      expect(quest.joinMessage).toHaveBeenCalledTimes(1)
+      expect(quest.joinMessage).toHaveBeenCalledWith(displayName)
+      expect(sendSpy).toHaveBeenCalledTimes(1)
+      expect(sendSpy).toHaveBeenCalledWith(quest.joinMessage(displayName))
+    })
   })
 })
