@@ -1,9 +1,10 @@
-import Quest, { Heist, randomQuest } from "./Quest"
+import Quest, { randomQuest } from "./Quest"
 import { YukiBuilder } from "@pinkilo/yukibot"
 import Env from "../../../env"
 import { supercommand } from "../../commands"
 import { transact } from "../../MoneySystem/TransactionBuilder"
 import { randFromRange } from "../../../util"
+import logger from "../../../logger"
 
 export enum QuestStatus {
   DORMANT,
@@ -29,7 +30,7 @@ export const QuestCommand = (y: YukiBuilder) =>
         if (_quest === undefined) return
         if (_quest.playerIDs.has(channelId)) return
         _quest.playerIDs.add(channelId)
-        _status = await _quest.step()
+        _status = await _quest.step(_status)
         await transact().withdraw(channelId, cost).execute()
         await y.sendMessage(_quest.joinMessage(displayName))
       }
@@ -41,24 +42,22 @@ export const QuestPassive = (y: YukiBuilder) =>
     async (msg, { isCommand }) =>
       msg.authorDetails.channelId !== Env.SELF.ID && !isCommand,
     async () => {
-      switch (_status) {
-        case QuestStatus.ANNOUNCED:
-          _status = await _quest.step()
-          break
-        case QuestStatus.RUNNING:
-          _status = await _quest.step()
-          break
-        case QuestStatus.ENDING:
-          await _quest.step()
-          _status = QuestStatus.DORMANT
-          break
-        default:
-          _startProbability = _startProbability + randFromRange(0, 2, false) / 100
-          if (Math.random() > _startProbability) return
-          // TODO start a quest
-          _quest = randomQuest()
-          await y.sendMessage("TODO")
-          _status = QuestStatus.ANNOUNCED
+      if (_status !== QuestStatus.DORMANT) {
+        _status = await _quest.step(_status)
+        // reset
+        if (_status === QuestStatus.DORMANT) {
+          logger.info("resetting quest state")
+          _quest = undefined
+          _startProbability = 0
+        }
+        return
       }
+      _startProbability += randFromRange(0, 2, false) / 100
+      if (Math.random() > _startProbability) return
+      logger.info("starting quest")
+      _quest = randomQuest()
+      const { success } = await y.sendMessage(_quest.announceMessage())
+      if (success) _status = QuestStatus.ANNOUNCED
+      else _quest = undefined
     }
   )
