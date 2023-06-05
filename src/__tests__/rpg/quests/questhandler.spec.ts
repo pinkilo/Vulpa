@@ -6,7 +6,7 @@ import { QuestStatus } from "../../../yuki/rpg/quests/QuestSystemState"
 jest.mock("../../../util/math", () => ({
   __esModule: true,
   ...jest.requireActual("../../../util/math"),
-  randFromRange: jest.fn(() => 100),
+  randFromRange: jest.fn(() => 1000),
 }))
 jest.mock("../../../yuki/rpg/quests/Quest", () => ({
   __esModule: true,

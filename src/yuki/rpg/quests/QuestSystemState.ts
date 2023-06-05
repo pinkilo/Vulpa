@@ -57,7 +57,8 @@ export const QuestPassive = (y: YukiBuilder) =>
         }
         return
       }
-      _startProbability += randFromRange(0, 2, false) / 100
+      _startProbability += randFromRange(0, 5, false) / 1000
+      logger.debug(`quest start probability: ${_startProbability.toFixed(4)}`)
       if (Math.random() > _startProbability) return
       logger.info("starting quest")
       _quest = randomQuest()

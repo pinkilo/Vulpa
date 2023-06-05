@@ -9,6 +9,8 @@ import {
   MoneySystem,
   PassiveMoney,
   Pushups,
+  QuestCommand,
+  QuestPassive,
   Socials,
   TimedMessages,
   Wallet,
@@ -31,7 +33,7 @@ async function main() {
   await MoneySystem.walletCache.load(ENV.FILE.CACHE.BANK)
 
   const bot = await yuki(async (y) => {
-    y.yukiConfig.name = "Yuki"
+    y.yukiConfig.name = "Vulpa"
     y.yukiConfig.prefix = /^[>!]/
     y.yukiConfig.test = ENV.DEV
     y.yukiConfig.subscriptionPollRate = 60 * 5
@@ -99,6 +101,7 @@ const Commands = (y: YukiBuilder) => {
   Wallet.Ranking(y)
   Wallet.View(y)
   Wallet.Leaderboard(y)
+  QuestCommand(y)
 }
 
 const Passives = (y: YukiBuilder) => {
@@ -106,4 +109,5 @@ const Passives = (y: YukiBuilder) => {
   TimedMessages(y)
   FoxPassive.ImGood(y)
   FoxPassive.Greeting(y)
+  QuestPassive(y)
 }

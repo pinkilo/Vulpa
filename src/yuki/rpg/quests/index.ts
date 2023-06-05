@@ -1,3 +1,3 @@
-import Quest, { QuestStatus } from "./Quest"
+import { QuestCommand, QuestPassive } from "./QuestSystemState"
 
-export { QuestStatus, Quest }
+export { QuestCommand, QuestPassive }

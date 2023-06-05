@@ -12,6 +12,7 @@ import {
   Wallet,
 } from "./commands"
 import { TimedMessages, PassiveMoney } from "./passives"
+import { QuestCommand, QuestPassive } from "./rpg"
 
 export {
   MoneySystem,
@@ -31,4 +32,6 @@ export {
   Wallet,
   TimedMessages,
   PassiveMoney,
+  QuestCommand,
+  QuestPassive,
 }
