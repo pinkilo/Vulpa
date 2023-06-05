@@ -8,6 +8,7 @@ export default {
   PROD: process.env.NODE_ENV === "prod",
   DEV: process.env.NODE_ENV === "dev",
   TEST: process.env.NODE_ENV === "test",
+  LOG: process.env.LOG ?? "none",
   PORT: parseInt(process.env.PORT),
   FILE: {
     CACHE: {

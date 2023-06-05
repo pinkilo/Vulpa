@@ -19,11 +19,11 @@ const _ = (qs: QuestStatus, msg?: string): [QuestStatus, string | undefined] => 
 
 export const Heist = (): Quest & { [k: symbol]: any } => ({
   playerIDs: new Set(),
-  limits: [3, 10],
+  limits: [1, 10],
   cost: 100,
   start: new Date(),
   lifespan: 1000 * 60 * 5,
-  announceMessage: () => "A heist is starting! Join for the chance of a payout!",
+  announceMessage: () => "A heist is starting! >join for the chance of a payout!",
   joinMessage: (name: string): string => `${name} joins the heist!`,
   async step(curStatus: QuestStatus) {
     switch (curStatus) {
@@ -39,12 +39,12 @@ export const Heist = (): Quest & { [k: symbol]: any } => ({
         else return _(curStatus)
       case QuestStatus.ENDING:
         const transaction = transact()
-        this.playerIDs.forEach((uid) => transaction.deposit(uid, this.cost * 2))
+        this.playerIDs.forEach((uid: string) => transaction.deposit(uid, this.cost * 2))
         await transaction.execute()
         return _(
           QuestStatus.DORMANT,
           `That's it folks -- what a score! You'll get your paydays, 
-          how's ${this.cost * 2} ${MS.name}sound`
+          how's ${this.cost * 2} ${MS.name} sound?`
         )
       case QuestStatus.DORMANT:
       default:

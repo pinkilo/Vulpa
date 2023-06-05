@@ -5,6 +5,7 @@
   ],
   "ext": "ts,html,css,js",
   "env": {
-    "NODE_ENV": "test"
+    "NODE_ENV": "dev",
+    "LOG": "debug"
   }
 }
