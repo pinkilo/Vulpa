@@ -28,10 +28,13 @@ export const QuestCommand = (y: YukiBuilder) =>
       async () => _quest?.cost ?? 0,
       async ({ authorDetails: { channelId, displayName } }, _, cost) => {
         if (_quest === undefined) return
+        if (_quest.playerIDs.size === _quest.limits[1]) return
         if (_quest.playerIDs.has(channelId)) return
         _quest.playerIDs.add(channelId)
-        _status = await _quest.step(_status)
-        await transact().withdraw(channelId, cost).execute()
+        ;[_status] = await _quest.step(_status)
+        const t = await transact()
+        t.withdraw(channelId, cost)
+        await t.execute()
         await y.sendMessage(_quest.joinMessage(displayName))
       }
     )
@@ -43,7 +46,9 @@ export const QuestPassive = (y: YukiBuilder) =>
       msg.authorDetails.channelId !== Env.SELF.ID && !isCommand,
     async () => {
       if (_status !== QuestStatus.DORMANT) {
-        _status = await _quest.step(_status)
+        let message: string | undefined
+        ;[_status, message] = await _quest.step(_status)
+        if (typeof message === "string") await y.sendMessage(message)
         // reset
         if (_status === QuestStatus.DORMANT) {
           logger.info("resetting quest state")
@@ -56,8 +61,8 @@ export const QuestPassive = (y: YukiBuilder) =>
       if (Math.random() > _startProbability) return
       logger.info("starting quest")
       _quest = randomQuest()
-      const { success } = await y.sendMessage(_quest.announceMessage())
-      if (success) _status = QuestStatus.ANNOUNCED
+      const result = await y.sendMessage(_quest.announceMessage())
+      if (result.success) _status = QuestStatus.ANNOUNCED
       else _quest = undefined
     }
   )
